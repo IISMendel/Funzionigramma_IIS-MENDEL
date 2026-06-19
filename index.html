@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funzionigramma — IIS G. Mendel 2025/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-primary:#2e7d32;
+    --green-dark:#1b5e20;
+    --green-light:#4caf50;
+    --green-pale:#e8f3e9;
+    --white:#ffffff;
+    --bg:#f5f5f5;
+    --text:#1a1a1a;
+    --muted:#5a6b5c;
+    --border:#dfe6df;
+    --shadow:0 2px 10px rgba(27,94,32,0.08);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    line-height:1.5;
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    background:linear-gradient(135deg, var(--green-dark), var(--green-primary) 60%, var(--green-light));
+    color:var(--white);
+    padding:64px 32px 56px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.08) 0, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,0.07) 0, transparent 45%);
+    pointer-events:none;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:6px;
+    background:var(--green-light);
+  }
+  header.hero .school{
+    font-size:0.85rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    opacity:0.85;
+    margin-bottom:12px;
+    position:relative;
+  }
+  header.hero h1{
+    font-family:'Merriweather', serif;
+    font-weight:900;
+    font-size:2.3rem;
+    margin:0 0 10px;
+    position:relative;
+  }
+  header.hero p.subtitle{
+    margin:0 0 28px;
+    font-size:1.05rem;
+    opacity:0.92;
+    position:relative;
+  }
+  .stats-row{
+    display:flex;
+    justify-content:center;
+    gap:36px;
+    flex-wrap:wrap;
+    position:relative;
+  }
+  .stat{
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:10px;
+    padding:10px 20px;
+    min-width:110px;
+    backdrop-filter:blur(2px);
+  }
+  .stat .n{
+    font-family:'Merriweather', serif;
+    font-weight:900;
+    font-size:1.5rem;
+    display:block;
+  }
+  .stat .l{
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    opacity:0.85;
+  }
+
+  /* ---------- STICKY SEARCH/NAV ---------- */
+  .controls{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--white);
+    border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+  .controls-inner{
+    max-width:1080px;
+    margin:0 auto;
+    padding:14px 24px;
+    display:flex;
+    gap:14px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .search-box{
+    flex:1;
+    min-width:220px;
+    position:relative;
+  }
+  .search-box input{
+    width:100%;
+    padding:10px 16px 10px 38px;
+    border:1.5px solid var(--border);
+    border-radius:24px;
+    font-size:0.95rem;
+    font-family:inherit;
+    outline:none;
+    transition:border-color .15s, box-shadow .15s;
+    background:var(--bg);
+  }
+  .search-box input:focus{
+    border-color:var(--green-primary);
+    box-shadow:0 0 0 3px var(--green-pale);
+    background:var(--white);
+  }
+  .search-box svg{
+    position:absolute;
+    left:13px;
+    top:50%;
+    transform:translateY(-50%);
+    width:16px;
+    height:16px;
+    color:var(--muted);
+    pointer-events:none;
+  }
+  .chip-nav{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .chip-nav button{
+    border:1.5px solid var(--border);
+    background:var(--white);
+    color:var(--green-dark);
+    font-family:inherit;
+    font-size:0.8rem;
+    font-weight:600;
+    padding:7px 13px;
+    border-radius:18px;
+    cursor:pointer;
+    transition:all .15s;
+    white-space:nowrap;
+  }
+  .chip-nav button:hover{
+    background:var(--green-pale);
+    border-color:var(--green-light);
+  }
+  .chip-nav button.active{
+    background:var(--green-primary);
+    border-color:var(--green-primary);
+    color:var(--white);
+  }
+  #noresults{
+    display:none;
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+    font-size:1.05rem;
+  }
+
+  .container{
+    max-width:1080px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+
+  /* ---------- AREA SECTIONS ---------- */
+  section.area{
+    margin-bottom:40px;
+    scroll-margin-top:90px;
+  }
+  .area-head{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:14px 18px;
+    background:var(--white);
+    border-radius:10px 10px 0 0;
+    border:1px solid var(--border);
+    border-bottom:none;
+    cursor:pointer;
+    user-select:none;
+    transition:background .15s;
+  }
+  .area-head:hover{
+    background:var(--green-pale);
+  }
+  .area-head .num{
+    font-family:'Merriweather', serif;
+    font-weight:900;
+    font-size:1.5rem;
+    color:var(--green-light);
+    min-width:38px;
+  }
+  .area-head .head-text{flex:1;}
+  .area-head h2{
+    font-family:'Merriweather', serif;
+    font-size:1.18rem;
+    color:var(--green-dark);
+    margin:0;
+  }
+  .area-head .desc{
+    color:var(--muted);
+    font-size:0.88rem;
+    margin:3px 0 0;
+  }
+  .area-head .count-badge{
+    background:var(--green-pale);
+    color:var(--green-dark);
+    font-size:0.75rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:12px;
+    white-space:nowrap;
+  }
+  .area-head .chevron{
+    width:20px; height:20px;
+    color:var(--green-primary);
+    transition:transform .25s;
+    flex-shrink:0;
+  }
+  section.area.collapsed .chevron{
+    transform:rotate(-90deg);
+  }
+  .area-body{
+    border:1px solid var(--border);
+    border-radius:0 0 10px 10px;
+    overflow:hidden;
+    background:var(--white);
+    box-shadow:var(--shadow);
+    display:grid;
+    grid-template-rows:1fr;
+    transition:grid-template-rows .3s ease;
+  }
+  section.area.collapsed .area-body{
+    grid-template-rows:0fr;
+  }
+  .area-body-inner{
+    overflow:hidden;
+    min-height:0;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  thead th{
+    background:var(--green-dark);
+    color:var(--white);
+    text-align:left;
+    font-size:0.76rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:11px 18px;
+    font-weight:600;
+  }
+  tbody tr{
+    border-top:1px solid var(--border);
+    transition:background .12s;
+  }
+  tbody tr:nth-child(even){background:#fafdfa;}
+  tbody tr:hover{background:var(--green-pale);}
+  tbody tr.hide{display:none;}
+  td{
+    padding:13px 18px;
+    vertical-align:top;
+    font-size:0.92rem;
+  }
+  td.role{font-weight:600; color:var(--green-dark); width:24%;}
+  td.person{width:24%;}
+  td.person .multi{display:block;}
+  td.person mark, td.role mark{background:#ffe27a; color:inherit; border-radius:3px; padding:0 2px;}
+  td.func{color:#333;}
+  table.compact td.dept{font-weight:600; color:var(--green-dark); width:55%;}
+  table.compact td.coord{width:45%;}
+
+  .empty-note{
+    padding:22px 18px;
+    color:var(--muted);
+    font-style:italic;
+    font-size:0.9rem;
+  }
+
+  /* ---------- BACK TO TOP ---------- */
+  #backtop{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:var(--green-primary);
+    color:var(--white);
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s, transform .2s;
+    z-index:60;
+  }
+  #backtop.show{opacity:1; pointer-events:auto;}
+  #backtop:hover{transform:translateY(-3px); background:var(--green-dark);}
+  #backtop svg{width:20px;height:20px;}
+
+  footer.page-footer{
+    text-align:center;
+    padding:28px 24px 40px;
+    color:var(--muted);
+    font-size:0.85rem;
+    border-top:1px solid var(--border);
+    margin-top:10px;
+  }
+
+  @media (max-width:700px){
+    .area-head .desc{display:none;}
+    table, thead, tbody, th, td, tr{display:block;}
+    thead{display:none;}
+    tbody tr{padding:14px 18px;}
+    td{padding:4px 0;}
+    td.role::before{content:"Ruolo: ";color:var(--muted);font-weight:400;}
+    td.person::before{content:"Responsabile: ";color:var(--muted);font-weight:400;}
+    td.func::before{content:"Funzioni: ";color:var(--muted);display:block;margin-bottom:2px;}
+    table.compact td.dept::before{content:"Dipartimento: ";color:var(--muted);font-weight:400;}
+    table.compact td.coord::before{content:"Coordinatore: ";color:var(--muted);font-weight:400;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="school">IIS G. Mendel — Villa Cortese (MI)</div>
+  <h1>Funzionigramma dell'Istituto</h1>
+  <p class="subtitle">Anno Scolastico 2025/2026</p>
+  <div class="stats-row">
+    <div class="stat"><span class="n">6</span><span class="l">Aree</span></div>
+    <div class="stat"><span class="n">35+</span><span class="l">Incarichi</span></div>
+    <div class="stat"><span class="n">13</span><span class="l">Dipartimenti</span></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Cerca un nome, un ruolo o una funzione…" autocomplete="off">
+    </div>
+    <div class="chip-nav" id="chipNav">
+      <button data-target="area1" class="active">01 Direzione</button>
+      <button data-target="area2">02 Indirizzi</button>
+      <button data-target="area3">03 FF.SS.</button>
+      <button data-target="area4">04 Dipartimenti</button>
+      <button data-target="area5">05 Infrastrutture</button>
+      <button data-target="area6">06 Commissioni</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div id="noresults">Nessun risultato trovato. Provate con un altro termine di ricerca.</div>
+
+  <section class="area" id="area1">
+    <div class="area-head" data-toggle>
+      <span class="num">01</span>
+      <div class="head-text">
+        <h2>Direzione e Staff di Coordinamento</h2>
+        <p class="desc">Gestione unitaria, amministrazione generale e coordinamento organizzativo e didattico.</p>
+      </div>
+      <span class="count-badge">4 ruoli</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="area-body"><div class="area-body-inner">
+      <table>
+        <thead><tr><th>Ruolo / Organo</th><th>Responsabile / Membri</th><th>Funzioni e Compiti Principali</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="role">Dirigente Scolastico</td>
+            <td class="person">Dott.ssa Cristina Gualtieri</td>
+            <td class="func">Assicura la gestione unitaria dell'istituto, la rappresentanza legale e la qualità dei processi formativi; definisce gli indirizzi gestionali ed economici tramite Atto di Indirizzo.</td>
+          </tr>
+          <tr>
+            <td class="role">Collaboratrice Vicaria</td>
+            <td class="person">Prof.ssa Giuliana Ronzello</td>
+            <td class="func">Sostituisce il Dirigente Scolastico in caso di assenza o impedimento; collabora alla gestione organizzativa quotidiana e al coordinamento dello Staff di Presidenza.</td>
+          </tr>
+          <tr>
+            <td class="role">Staff di Presidenza</td>
+            <td class="person">
+              <span class="multi">Prof.ssa Giuliana Ronzello</span>
+              <span class="multi">Prof. Salvatore Librizzi</span>
+              <span class="multi">Prof.ssa Emanuela Rancilio</span>
+            </td>
+            <td class="func">Supporta la Dirigenza nella pianificazione strategica, nel monitoraggio delle attività scolastiche, nell'organizzazione e nella gestione interna.</td>
+          </tr>
+          <tr>
+            <td class="role">Direttore dei Servizi Generali e Amministrativi (DSGA)</td>
+            <td class="person">Personale ATA di ruolo/incaricato</td>
+            <td class="func">Sovraintende ai servizi amministrativi, contabili e generali della scuola; coordina e organizza il lavoro di tutto il personale ATA.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section class="area" id="area2">
+    <div class="area-head" data-toggle>
+      <span class="num">02</span>
+      <div class="head-text">
+        <h2>Responsabili di Indirizzo, Ordine di Scuola e Progetti Chiave</h2>
+        <p class="desc">Percorsi ordinamentali e macro-aree strategiche dell'offerta formativa diurna e serale.</p>
+      </div>
+      <span class="count-badge">6 ruoli</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="area-body"><div class="area-body-inner">
+      <table>
+        <thead><tr><th>Macro-Area / Indirizzo</th><th>Docente Responsabile</th><th>Funzioni e Compiti Principali</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="role">Istituto Tecnico Agrario</td>
+            <td class="person">Prof.ssa Giuliana Ronzello</td>
+            <td class="func">Coordina le attività didattiche del settore tecnologico (articolazioni GAT e PT) e il monitoraggio dei percorsi quinquennali.</td>
+          </tr>
+          <tr>
+            <td class="role">Professionale e IeFP</td>
+            <td class="person">Prof. Pasquale Donnarumma</td>
+            <td class="func">Coordina l'indirizzo professionale regionale e statale (Qualifica di Operatore, Tecnico e V anno); gestisce gli esami di qualifica e diploma e la commissione crediti.</td>
+          </tr>
+          <tr>
+            <td class="role">Istruzione degli Adulti (IDA - Serale)</td>
+            <td class="person">Prof. Franco Albè</td>
+            <td class="func">Gestisce l'organizzazione didattica dei percorsi serali tecnico e professionale; coordina l'accoglienza degli studenti adulti e la stesura del Patto Formativo Individuale (PFI).</td>
+          </tr>
+          <tr>
+            <td class="role">Attività e Progetti Extracurriculari</td>
+            <td class="person">Prof. Salvatore Librizzi</td>
+            <td class="func">Supervisiona la progettualità inserita nel PTOF al di fuori dell'orario delle lezioni e coordina l'allocazione e la gestione dei progetti speciali.</td>
+          </tr>
+          <tr>
+            <td class="role">Educazione Civica</td>
+            <td class="person">Prof.ssa Annalisa D'Angelo</td>
+            <td class="func">Supervisiona l'attuazione del curricolo trasversale di 33 ore annuali secondo le Linee Guida d'Istituto; armonizza le attività e i nuclei tematici tra i vari indirizzi.</td>
+          </tr>
+          <tr>
+            <td class="role">Riorientamento e Passaggi</td>
+            <td class="person">Prof.ssa Giuliana Ronzello</td>
+            <td class="func">Gestisce i percorsi di accoglienza, orientamento e le procedure di passaggio tra indirizzi interni o da altri istituti scolastici.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section class="area" id="area3">
+    <div class="area-head" data-toggle>
+      <span class="num">03</span>
+      <div class="head-text">
+        <h2>Funzioni Strumentali (FF.SS.)</h2>
+        <p class="desc">Supporto al Collegio Docenti per il successo formativo e l'inclusione degli studenti.</p>
+      </div>
+      <span class="count-badge">4 ruoli</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="area-body"><div class="area-body-inner">
+      <table>
+        <thead><tr><th>Area d'Intervento</th><th>Docente Referente</th><th>Funzioni e Compiti Principali</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="role">Inclusione Alunni con Disabilità</td>
+            <td class="person">
+              <span class="multi">Prof.ssa Francesca Cordò</span>
+              <span class="multi">Prof.ssa Gianna L'Episcopo</span>
+            </td>
+            <td class="func">Coordinano la stesura e l'attuazione dei Piani Educativi Individualizzati (PEI) tramite la piattaforma Cosmi ICF; gestiscono l'organico di sostegno e i rapporti con l'ambito territoriale.</td>
+          </tr>
+          <tr>
+            <td class="role">Inclusione Alunni con D.S.A. e B.E.S.</td>
+            <td class="person">Prof.ssa Iole Pagliuca</td>
+            <td class="func">Organizza e analizza le certificazioni in ingresso; supporta i Consigli di Classe nella stesura e nel monitoraggio dei Piani Didattici Personalizzati (PDP); cura la comunicazione con le famiglie.</td>
+          </tr>
+          <tr>
+            <td class="role">Orientamento (IeFP, Professionale e IDA)</td>
+            <td class="person">Prof. Franco Albè</td>
+            <td class="func">Progetta e realizza le attività di orientamento e transizione in uscita specifiche per i corsi professionali e l'istruzione degli adulti.</td>
+          </tr>
+          <tr>
+            <td class="role">Orientamento (Istituto Tecnico)</td>
+            <td class="person">
+              <span class="multi">Prof.ssa Luisa Zanzottera</span>
+              <span class="multi">Prof. Massimo De Cecco</span>
+            </td>
+            <td class="func">Curano le attività di orientamento in entrata (Open Day, Campus) e in uscita verso i percorsi universitari, gli ITS e il mondo del lavoro per il settore tecnologico.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section class="area" id="area4">
+    <div class="area-head" data-toggle>
+      <span class="num">04</span>
+      <div class="head-text">
+        <h2>Coordinatori di Dipartimento Disciplinare</h2>
+        <p class="desc">Progettazione didattica disciplinare, criteri di valutazione e innovazione dei laboratori.</p>
+      </div>
+      <span class="count-badge">13 dipartimenti</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="area-body"><div class="area-body-inner">
+      <table class="compact">
+        <thead><tr><th>Dipartimento Disciplinare</th><th>Docente Coordinatore</th></tr></thead>
+        <tbody>
+          <tr><td class="dept">Agronomia</td><td class="coord">Prof.ssa Renata Minnaja</td></tr>
+          <tr><td class="dept">Chimica</td><td class="coord">Prof. Alberto Venegoni</td></tr>
+          <tr><td class="dept">Diritto</td><td class="coord">Prof.ssa Annalisa D'Angelo</td></tr>
+          <tr><td class="dept">Economia, Estimo, Marketing e Legislazione (E.E.L.M.)</td><td class="coord">Prof. Massimo De Cecco</td></tr>
+          <tr><td class="dept">Inglese</td><td class="coord">Prof.ssa Anna Lisa Musazzi</td></tr>
+          <tr><td class="dept">Lettere e Storia</td><td class="coord">Prof. Riccardo Pozzi</td></tr>
+          <tr><td class="dept">Matematica e Fisica</td><td class="coord">Prof.ssa Emanuela Rancilio</td></tr>
+          <tr><td class="dept">Produzioni Animali</td><td class="coord">Prof.ssa Maria D'Abramo</td></tr>
+          <tr><td class="dept">Religione</td><td class="coord">Prof. Paolo Natoli</td></tr>
+          <tr><td class="dept">Scienze motorie</td><td class="coord">Prof.ssa Silvia Di Meco</td></tr>
+          <tr><td class="dept">Scienze, Geografia, Biologia, Biotecnologie applicate</td><td class="coord">Prof.ssa Vincenza Romanini</td></tr>
+          <tr><td class="dept">Sostegno</td><td class="coord">Prof.ssa Francesca Cordò / Prof.ssa Gianna L'Episcopo</td></tr>
+          <tr><td class="dept">T.T.R.G. e Genio Rurale</td><td class="coord">Prof. Michele Trieste</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section class="area" id="area5">
+    <div class="area-head" data-toggle>
+      <span class="num">05</span>
+      <div class="head-text">
+        <h2>Management delle Infrastrutture, del Sito e dei Laboratori</h2>
+        <p class="desc">Efficienza, sicurezza e aggiornamento degli spazi didattici, del sito e dell'azienda agraria.</p>
+      </div>
+      <span class="count-badge">10 ambiti</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="area-body"><div class="area-body-inner">
+      <table>
+        <thead><tr><th>Ambito / Spazio di Responsabilità</th><th>Responsabile Referente</th><th>Compiti e Funzioni Principali</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="role">Ufficio Tecnico</td>
+            <td class="person">Prof. Samuele Petruzzi</td>
+            <td class="func">Gestisce la manutenzione dei laboratori, l'approvvigionamento dei materiali didattici e sovrintende ai reparti di lavorazione tecnica.</td>
+          </tr>
+          <tr>
+            <td class="role">Azienda Agraria S. Grato</td>
+            <td class="person">Prof. Valerio Sanfilippo</td>
+            <td class="func">Coordina le attività e gli indirizzi produttivi dell'azienda agro-frutticola e vitivinicola collegata (250 ha) per le esercitazioni pratiche.</td>
+          </tr>
+          <tr>
+            <td class="role">Animatore Digitale</td>
+            <td class="person">Prof. Giorgio Dino</td>
+            <td class="func">Cura l'attuazione del PNSD, lo sviluppo di aule immersive/TEAL e la formazione dei colleghi sulle metodologie digitali.</td>
+          </tr>
+          <tr>
+            <td class="role">Gestione Sito Web &amp; PNRR M1C1</td>
+            <td class="person">Prof. Massimiliano Crespi</td>
+            <td class="func">Presidia l'aggiornamento, la manutenzione e l'adeguamento normativo europeo dei contenuti del portale d'istituto secondo i nuovi modelli per le scuole.</td>
+          </tr>
+          <tr>
+            <td class="role">Team Digitale</td>
+            <td class="person">
+              <span class="multi">Prof. G. Dino</span>
+              <span class="multi">Prof. M. Crespi</span>
+              <span class="multi">Prof. M. Grandi</span>
+            </td>
+            <td class="func">Supporta l'Animatore Digitale nell'assistenza e nella transizione tecnologica delle aule e dei sistemi di condivisione Workspace.</td>
+          </tr>
+          <tr>
+            <td class="role">Laboratorio di Biologia</td>
+            <td class="person">Prof. Marco Nigro</td>
+            <td class="func">Presidia il laboratorio e le nuove strumentazioni di microscopia digitale legate ai fondi PNRR Next Generation Lab.</td>
+          </tr>
+          <tr>
+            <td class="role">Laboratorio di Chimica</td>
+            <td class="person">Prof. Aldo Nieli</td>
+            <td class="func">Gestisce la sicurezza, le attrezzature e i reagenti delle postazioni chimiche fruibili anche dal corso serale.</td>
+          </tr>
+          <tr>
+            <td class="role">Laboratorio di Informatica</td>
+            <td class="person">Prof. Mattia Grandi</td>
+            <td class="func">Gestisce le reti informatiche d'istituto, Info 2 e le postazioni pc e Chromebook dedicate alla didattica.</td>
+          </tr>
+          <tr>
+            <td class="role">Laboratorio di Meristematica</td>
+            <td class="person">Prof.ssa Renata Minnaja</td>
+            <td class="func">Responsabile della struttura e dei protocolli del laboratorio speciale per la micropropagazione e meristematica.</td>
+          </tr>
+          <tr>
+            <td class="role">Laboratorio Trasformazione Prodotti</td>
+            <td class="person">Prof. Alberto Venegoni</td>
+            <td class="func">Coordina il mini-caseificio didattico, l'impianto di compostaggio e la sensoristica digitalizzata per il packaging 4.0.</td>
+          </tr>
+          <tr>
+            <td class="role">Palestre e Impianti Sportivi</td>
+            <td class="person">Prof. Antonello Vernucci</td>
+            <td class="func">Presidia le dotazioni sportive e la pianificazione d'uso della palestra interna e di quelle in convenzione.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section class="area" id="area6">
+    <div class="area-head" data-toggle>
+      <span class="num">06</span>
+      <div class="head-text">
+        <h2>Commissioni Operative e Comitati d'Istituto</h2>
+        <p class="desc">Organi collegiali ristretti per funzioni strategiche ricorrenti, organizzative ed elettorali.</p>
+      </div>
+      <span class="count-badge">—</span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="area-body"><div class="area-body-inner">
+      <p class="empty-note">Sezione non specificata nel documento originale — da completare con il dettaglio delle commissioni attive.</p>
+    </div></div>
+  </section>
+
+</div>
+
+<button id="backtop" aria-label="Torna su">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<footer class="page-footer">
+  IIS G. Mendel — Villa Cortese (MI) · Funzionigramma a.s. 2025/2026
+</footer>
+
+<script>
+  // --- collapse / expand sections ---
+  document.querySelectorAll('[data-toggle]').forEach(head => {
+    head.addEventListener('click', () => {
+      head.closest('.area').classList.toggle('collapsed');
+    });
+  });
+
+  // --- chip nav: scroll + active state ---
+  const chips = document.querySelectorAll('.chip-nav button');
+  chips.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      target.classList.remove('collapsed');
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  const sections = Array.from(document.querySelectorAll('section.area'));
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        chips.forEach(c => c.classList.toggle('active', c.dataset.target === entry.target.id));
+      }
+    });
+  }, {rootMargin:'-40% 0px -50% 0px'});
+  sections.forEach(s => observer.observe(s));
+
+  // --- search / filter ---
+  const searchInput = document.getElementById('searchInput');
+  const noResults = document.getElementById('noresults');
+
+  function clearHighlights(){
+    document.querySelectorAll('mark').forEach(m => {
+      const parent = m.parentNode;
+      parent.replaceChild(document.createTextNode(m.textContent), m);
+      parent.normalize();
+    });
+  }
+
+  function highlight(node, term){
+    // simple text highlight within td cells
+    if(!term) return;
+    const cells = node.querySelectorAll('td.role, td.person');
+    cells.forEach(cell => {
+      const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'ig');
+      cell.querySelectorAll('*').forEach(el => {
+        if(el.children.length === 0 && regex.test(el.textContent)){
+          el.innerHTML = el.textContent.replace(regex, '<mark>$1</mark>');
+        }
+      });
+      if(cell.children.length === 0 && regex.test(cell.textContent)){
+        cell.innerHTML = cell.textContent.replace(regex, '<mark>$1</mark>');
+      }
+    });
+  }
+
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.trim().toLowerCase();
+    clearHighlights();
+    let anyVisible = false;
+    let anySectionHasVisible = false;
+
+    sections.forEach(section => {
+      const rows = section.querySelectorAll('tbody tr');
+      let sectionHasMatch = false;
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const match = term === '' || text.includes(term);
+        row.classList.toggle('hide', !match);
+        if(match){ sectionHasMatch = true; anyVisible = true; }
+      });
+      if(term !== ''){
+        section.style.display = sectionHasMatch ? '' : 'none';
+        if(sectionHasMatch){
+          section.classList.remove('collapsed');
+          highlight(section, term);
+          anySectionHasVisible = true;
+        }
+      } else {
+        section.style.display = '';
+      }
+    });
+
+    noResults.style.display = (term !== '' && !anySectionHasVisible) ? 'block' : 'none';
+  });
+
+  // --- back to top ---
+  const backtop = document.getElementById('backtop');
+  window.addEventListener('scroll', () => {
+    backtop.classList.toggle('show', window.scrollY > 400);
+  });
+  backtop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
